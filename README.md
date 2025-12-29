@@ -2,7 +2,7 @@
 
 view is a minimal document viewer that doesn't on depen on heavy graphics toolkit, it feautures vi-like keybindings, and uses a simple text file to keep track of reading progress in ~/.local/share/view/books.txt
 
-## building:
+## building
 
 to build for framebuffer simply run
 ```
