@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <time.h>
+#include <libgen.h>
+#include <math.h>
+#include <mupdf/fitz.h>
+
+#define VIEW_STORAGE
+#include <util/estd.h>
+#include "../include/globals.h"
+#include "../include/db.h"
+#include "../include/magic.h"
+#include "../include/book-pdf.h"
+#ifdef VIEW_FB
+#include "../include/graphics-fb.h"
+#endif
+#ifdef VIEW_X11
+#include "../include/graphics-x11.h"
+#endif
+#ifdef VIEW_WAY
+#include "../include/graphics-way.h"
+#endif
+
+static void
+rand_init(void) {
+    unsigned seed;
+
+    //__asm__ ("rdrand %0\n" : "=r" (seed));
+    seed = time(NULL);
+    srand48(seed);
+}
+
+int
+main(int argc, char **argv) {
+    int n = 0, arg = 1;
+    const char *path;
+    DB *db;
+
+    if(argc < 2)
+        die("view", "Not enough arguments");
+
+    if(strcmp(argv[1], "-s") == 0) {
+        db = 0;
+        arg++;
+    }
+
+    path = argv[arg];
+    book = book_open(path);
+    if(!book)
+        diearg("view", path, "File not found");
+
+    db = db_init("view", "books.txt");
+    n = db_read(db, path);
+    page = &book->pages[n];
+    undo = page;
+    rand_init();
+
+    if(0) { 
+#ifdef VIEW_FB
+    } else if(strcmp(getenv("TERM"), "linux") == 0) {
+        fb_main();
+#endif
+#ifdef VIEW_X11
+    } else if(getenv("DISPLAY")) {
+        x11_main();
+#endif
+#ifdef VIEW_WAY
+    } else if(getenv("WAYLAND_DISPLAY")) {
+        way_main();
+#endif
+    } else {
+        die("view", "No display drivers found");
+    }
+    if(db)
+        db_add(db, path, page->n);
+}
