@@ -8,7 +8,7 @@ to build for the framebuffer simply run
 ```
 make
 ```
-to build for all display driver run
+to build for all display drivers run
 ```
 make X11=1 WAYLAND=1
 ```
