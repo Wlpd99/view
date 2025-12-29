@@ -1,0 +1,22 @@
+# view
+
+view is a minimal document viewer that doesn't on depen on heavy graphics toolkit, it feautures vi-like keybindings, and uses a simple text file to keep track of reading progress in ~/.local/share/view/books.txt
+
+## building:
+
+to build for framebuffer simply run
+```
+make
+```
+to build for all display driver run
+```
+make X11=1 WAYLAND=1
+```
+
+dependencies:
+- xxhash
+- mupdf
+- djvulibre
+- libspectre
+- libX11 (optional)
+- libwayland (optional)
